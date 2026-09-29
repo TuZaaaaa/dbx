@@ -12,6 +12,7 @@
 let lastHandledFormatRequestId = 0;
 let lastHandledCompressRequestId = 0;
 let vimMappingsApplied = false;
+let vimClipboardConfigured = false;
 </script>
 
 <script setup lang="ts">
@@ -60,7 +61,7 @@ import { parkEditorNativeSelection, type EditorNativeSelectionPark } from "@/lib
 import CodeSnapshotDialog from "@/components/codeSnapshot/CodeSnapshotDialog.vue";
 import QueryEditorContextMenu, { type QueryEditorContextMenuState, type QueryEditorContextMenuActions } from "./QueryEditorContextMenu.vue";
 
-import { clipboardLineEndings, readTextFromClipboard } from "@/lib/common/clipboard";
+import { clipboardLineEndings, copyToClipboard, readTextFromClipboard } from "@/lib/common/clipboard";
 
 import { resolveExecutableSql, type SqlExecutionOverride } from "@/lib/sql/sqlExecutionTarget";
 import { supportsExecutionTargetPicker, type SqlTextRange } from "@/lib/sql/sqlStatementRanges";
@@ -108,6 +109,7 @@ import { normalizeShortcutSettings, shortcutToCodeMirrorKey } from "@/lib/editor
 import { trimmedSelectionLayer } from "@/lib/editor/codemirrorTrimmedSelectionLayer";
 import { editorClipboardLineEndingsExtension } from "@/lib/editor/editorClipboardLineEndings";
 import { applyVimConfig, isVimMappingCommand, loadVimConfig } from "@/lib/editor/vimConfig";
+import { configureVimSystemClipboard } from "@/lib/editor/vimSystemClipboard";
 
 import { selectionMatchOccurrences } from "@/lib/editor/codemirrorSelectionMatches";
 
@@ -1456,6 +1458,10 @@ function vimModeExtension(enabled = settingsStore.editorSettings.vimModeEnabled)
 function configureDbxVimCommands(vimApi: typeof import("@replit/codemirror-vim").Vim) {
   if (codeMirrorRuntime.dbxVimCommandsConfigured) return;
   codeMirrorRuntime.dbxVimCommandsConfigured = true;
+  if (!vimClipboardConfigured) {
+    configureVimSystemClipboard(vimApi, { readText: readTextFromClipboard, writeText: copyToClipboard });
+    vimClipboardConfigured = true;
+  }
   vimApi.defineEx("write", "w", (cm) => {
     cm.cm6?.contentDOM.dispatchEvent(new CustomEvent(DBX_VIM_SAVE_EVENT, { bubbles: true }));
   });

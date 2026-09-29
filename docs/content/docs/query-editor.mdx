@@ -13,9 +13,10 @@ In the desktop app, enable Vim mode in **Editor Settings** to load commands from
 " DBX Vim mappings
 imap jj <Esc>
 nmap Y y$
+set clipboard=unnamedplus
 ```
 
-Unsupported commands are ignored so the editor can still start. The Vim config does not add system clipboard integration for `set clipboard=unnamedplus`.
+With `set clipboard=unnamedplus`, Vim yanks and deletes write to the system clipboard, and normal-mode `p` and `P` read from it. Unsupported commands do not prevent the editor from starting.
 
 ## Basic Workflow
 
