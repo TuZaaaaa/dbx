@@ -5,6 +5,18 @@ description: Write, understand, parameterize, execute, analyze, and reuse SQL in
 
 The query editor is the SQL workspace in DBX. It combines dialect-aware highlighting and completion, semantic diagnostics, parameter input, execution progress, multiple results, execution plans, query history, the SQL library, and AI assistance in one tab.
 
+## Vim configuration
+
+In the desktop app, enable Vim mode in **Editor Settings** to load commands from `~/.dbx/vimrc`. Create the file if needed, then restart DBX after editing it. Blank lines and lines beginning with `"` are ignored. Commands supported by CodeMirror Vim, such as these mappings, apply to every SQL editor tab:
+
+```vim
+" DBX Vim mappings
+imap jj <Esc>
+nmap Y y$
+```
+
+Unsupported commands are ignored so the editor can still start. The Vim config does not add system clipboard integration for `set clipboard=unnamedplus`.
+
 ## Basic Workflow
 
 <Steps>
